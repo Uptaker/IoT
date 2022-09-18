@@ -9,10 +9,9 @@
 
     async function status() {
         const number = await fetch(`/status`).then((res) => res.text()) ?? 0
-        console.log(number)
         const body = document.querySelector('body')
         body.innerText = number
-        body.style.backgroundColor = `rgba(255, 99, 71, ${number / 100})`
+        body.style.backgroundColor = `rgba(255, 99, 71, ${number / 1000})`
     }
     document.addEventListener('DOMContentLoaded', () => {
         status()

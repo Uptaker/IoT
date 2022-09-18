@@ -12,7 +12,7 @@
         console.log(number)
         const body = document.querySelector('body')
         body.innerText = number
-        body.style.backgroundColor = `rgba(255, 99, 71, ${number ?? 0 / 100})`
+        body.style.backgroundColor = `rgba(255, 99, 71, ${number / 100})`
     }
     document.addEventListener('DOMContentLoaded', () => {
         status()

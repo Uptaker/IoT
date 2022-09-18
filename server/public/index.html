@@ -6,30 +6,21 @@
 </head>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelector("#submit").addEventListener('click', postLamp)
 
-        async function postLamp() {
-            const form = document.querySelector("#form")
-            const toggle = form.elements.toggle.value
-            await fetch(`/lamp/${toggle === 'on' ? 'on' : 'off'}`, {method: 'POST'})
-            console.log('request')
-        }
-    }, false);
-
+    async function status() {
+        const number = await (await fetch(`/status`, {method: 'GET'})).text() ?? 0
+        console.log(number)
+        const body = document.querySelector('body')
+        body.innerText = number
+        body.style.backgroundColor = `rgba(255, 99, 71, ${number ?? 0 / 100})`
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        status()
+        setInterval(status, 10000)
+    })
 </script>
 
 <body>
-<form id="form" onsubmit="return postLamp(this);">
-    <label>Yes
-        <input name="toggle" type="radio" required value="on">
-    </label>
-    <label> No
-        <input name="toggle" type="radio" required value="off">
-    </label>
-    <label> Submit
-        <input type="button" id="submit" name="button">
-    </label>
-</form>
+
 </body>
 </html>

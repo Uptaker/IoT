@@ -8,7 +8,7 @@
 <script>
 
     async function status() {
-        const number = await (await fetch(`/status`, {method: 'GET'})).text() ?? 0
+        const number = await fetch(`/status`).then((res) => res.text()) ?? 0
         console.log(number)
         const body = document.querySelector('body')
         body.innerText = number

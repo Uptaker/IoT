@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Asjade Internet</title>
+</head>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector("#submit").addEventListener('click', postLamp)
+
+        async function postLamp() {
+            const form = document.querySelector("#form")
+            const toggle = form.elements.toggle.value
+            await fetch(`/lamp/${toggle === 'on' ? 'on' : 'off'}`, {method: 'POST'})
+            console.log('request')
+        }
+    }, false);
+
+</script>
+
+<body>
+<form id="form" onsubmit="return postLamp(this);">
+    <label>Yes
+        <input name="toggle" type="radio" required value="on">
+    </label>
+    <label> No
+        <input name="toggle" type="radio" required value="off">
+    </label>
+    <label> Submit
+        <input type="button" id="submit" name="button">
+    </label>
+</form>
+</body>
+</html>

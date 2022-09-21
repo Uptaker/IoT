@@ -6,28 +6,32 @@
 </head>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelector("#submit").addEventListener('click', postLamp)
+    let config
 
-        async function postLamp() {
-            const form = document.querySelector("#form")
-            const toggle = form.elements.toggle.value
-            await fetch(`/lamp/${toggle === 'on' ? 'on' : 'off'}`, {method: 'POST'})
-            console.log('request')
+    document.addEventListener('DOMContentLoaded', async () => {
+        config = await (await fetch('/limits')).json() ?? {error: 'Could not resolve. Please try again later'}
+        document.querySelector('#config').value = JSON.stringify(config, null, 2)
+        document.querySelector("#submitConfig").addEventListener('click', postConfig)
+
+        async function postConfig() {
+            const config = JSON.parse(document.querySelector("#config").value)
+            console.log(config)
+            await fetch(`/limits`, {
+              method: 'POST', body: JSON.stringify(config), headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              }})
+            location.reload()
         }
     }, false);
 </script>
 
-<body style="margin: 10% auto;">
-<form id="form" onsubmit="return postLamp(this);">
-    <label for="toggleTrue">Yes</label>
-    <input name="toggle" id="toggleTrue" type="radio" required value="on">
-
-    <label for="toggleFalse">No</label>
-    <input name="toggle" id="toggleFalse" type="radio" required value="off">
-
+<body>
+<form style="width: min-content; height: min-content ;margin: auto;">
+    <label for="config">Configuration JSON</label>
     <br>
-    <input type="button" id="submit" name="button" value="Submit">
+    <textarea cols="20" rows="30" id="config" required></textarea>
+    <input type="button" id="submitConfig" name="button" value="Submit">
 </form>
 </body>
 </html>

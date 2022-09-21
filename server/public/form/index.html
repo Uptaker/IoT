@@ -16,20 +16,18 @@
             console.log('request')
         }
     }, false);
-
 </script>
 
-<body>
+<body style="margin: 10% auto;">
 <form id="form" onsubmit="return postLamp(this);">
-    <label>Yes
-        <input name="toggle" type="radio" required value="on">
-    </label>
-    <label> No
-        <input name="toggle" type="radio" required value="off">
-    </label>
-    <label> Submit
-        <input type="button" id="submit" name="button">
-    </label>
+    <label for="toggleTrue">Yes</label>
+    <input name="toggle" id="toggleTrue" type="radio" required value="on">
+
+    <label for="toggleFalse">No</label>
+    <input name="toggle" id="toggleFalse" type="radio" required value="off">
+
+    <br>
+    <input type="button" id="submit" name="button" value="Submit">
 </form>
 </body>
 </html>

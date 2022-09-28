@@ -8,13 +8,14 @@
 <script>
   let lastTime = Date.now()
   let values = []
+  let groups = [0, 0, 0, 0]
 
   async function status() {
     document.querySelector('#lastFetch').innerText = new Date(Date.now()).toLocaleString()
     let {value, lastUpdate} = await fetch(`/status/last-update`).then((res) => res.json()) ?? 0
     if (lastTime === lastUpdate) return
-
     value = parseInt(value)
+    updateGroups(value)
     lastTime = lastUpdate
     values.push(value)
     document.querySelector('#value').innerText = value
@@ -42,14 +43,26 @@
     const mean = values.reduce((a, b) => a + b) / size
     document.querySelector('#stdDeviation').innerText = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / size)
     document.querySelector('#valueCount').innerText = size
-    const average = values.sort((a, b) =>  a - b).length / 2
-    document.querySelector('#median').innerText = average % 1 ===0 ? (values[average - 1] + values[average]) / 2 : values[Math.floor(average)]
+    const average = values.sort((a, b) => a - b).length / 2
+    document.querySelector('#median').innerText = average % 1 === 0 ? (values[average - 1] + values[average]) / 2 : values[Math.floor(average)]
+  }
+
+  function updateGroups(value, remove = false) {
+    if (value >= 0 && value <= 256) remove ? groups[0] -= 1 : groups[0] += 1
+    else if (value >= 257 && value <= 512) remove ? groups[1] -= 1 : groups[1] += 1
+    else if (value >= 513 && value <= 768) remove ? groups[2] -= 1 : groups[1] += 1
+    else if (value >= 769 && value <= 1024) remove ? groups[3] -= 1 : groups[1] += 1
+    document.querySelector('#group1').innerText = groups[0]
+    document.querySelector('#group2').innerText = groups[1]
+    document.querySelector('#group3').innerText = groups[2]
+    document.querySelector('#group4').innerText = groups[3]
   }
 
   function deleteFirst() {
-    values.shift()
+    const firstValue = values.shift()
     document.querySelector('#el-1').remove()
     document.querySelector('#delFirstBtn').remove()
+    updateGroups(firstValue, true)
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -78,7 +91,12 @@
         <p>Average value: <span id="averageValue"></span></p>
         <p>Standard deviation: <span id="stdDeviation"></span></p>
         <p>Median: <span id="median"></span></p>
-        <div id="color" style="height: 500px; width: 500px; border: 1px solid indianred"></div>
+        <div id="color" style="display:grid; grid-template-columns: 1fr 1fr; height: 500px; width: 500px; border: 1px solid indianred; text-align: center; align-items: center">
+            <div><b>0-256:</b> <span id="group1"></span></div>
+            <div><b>257-512:</b> <span id="group2"></span></div>
+            <div><b>513-768:</b> <span id="group3"></span></div>
+            <div><b>769-1024:</b> <span id="group4"></span></div>
+        </div>
     </div>
 </div>
 

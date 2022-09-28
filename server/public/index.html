@@ -8,12 +8,17 @@
 <script>
   let lastTime = Date.now()
   let values = []
+  let allValues = []
   let groups = [0, 0, 0, 0]
 
   async function status() {
     document.querySelector('#lastFetch').innerText = new Date(Date.now()).toLocaleString()
     let {value, lastUpdate} = await fetch(`/status/last-update`).then((res) => res.json()) ?? 0
-    if (lastTime === lastUpdate) return
+    if (lastTime === lastUpdate) {
+      allValues.push(value)
+      return drawGraph()
+    }
+    allValues.push(value)
     value = parseInt(value)
     updateGroups(value)
     lastTime = lastUpdate
@@ -23,6 +28,7 @@
     document.querySelector('#color').style.backgroundColor = `rgba(255, 99, 71, ${value / 1000})`
     addToList(value)
     calculate()
+    drawGraph()
   }
 
   function addToList(value) {
@@ -60,9 +66,64 @@
 
   function deleteFirst() {
     const firstValue = values.shift()
+    allValues.shift()
     document.querySelector('#el-1').remove()
     document.querySelector('#delFirstBtn').remove()
     updateGroups(firstValue, true)
+  }
+
+  function drawGraph() {
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext("2d");
+    const GRAPH_TOP = 25;
+    const GRAPH_BOTTOM = 375;
+    const GRAPH_LEFT = 25;
+    const GRAPH_RIGHT = 475;
+    const GRAPH_HEIGHT = 350;
+
+    context.clearRect(0, 0, 500, 400);
+
+    // draw X and Y axis
+    context.beginPath();
+    context.strokeStyle = "#f37070";
+    context.moveTo( GRAPH_LEFT, GRAPH_BOTTOM );
+    context.lineTo( GRAPH_RIGHT, GRAPH_BOTTOM );
+    context.lineTo( GRAPH_RIGHT, GRAPH_TOP );
+    context.stroke();
+
+    context.beginPath();
+    context.strokeStyle = "#e3c8c8";
+    context.moveTo( GRAPH_LEFT, GRAPH_TOP );
+    context.lineTo( GRAPH_RIGHT, GRAPH_TOP );
+    context.stroke();
+
+    context.beginPath();
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 4 * 3 + GRAPH_TOP );
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 * 3 + GRAPH_TOP );
+    context.stroke();
+
+    context.beginPath();
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 2 + GRAPH_TOP );
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 2 + GRAPH_TOP );
+    context.stroke();
+
+    context.beginPath();
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );
+    context.stroke();
+
+    const size = allValues.length
+    const largest = Math.max.apply(null, allValues)
+
+    context.beginPath();
+    context.lineJoin = "round";
+    context.strokeStyle = "black";
+    context.moveTo(GRAPH_LEFT, (GRAPH_HEIGHT - allValues[0] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
+    for (let i = 1; i < size; i++) {
+      context.lineTo(GRAPH_RIGHT / size * i + GRAPH_LEFT, (GRAPH_HEIGHT - allValues[i] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
+    }
+    context.stroke();
+
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -91,6 +152,7 @@
         <p>Average value: <span id="averageValue"></span></p>
         <p>Standard deviation: <span id="stdDeviation"></span></p>
         <p>Median: <span id="median"></span></p>
+        <canvas id="canvas" width="500" height="500"></canvas>
         <div id="color" style="display:grid; grid-template-columns: 1fr 1fr; height: 500px; width: 500px; border: 1px solid indianred; text-align: center; align-items: center">
             <div><b>0-256:</b> <span id="group1"></span></div>
             <div><b>257-512:</b> <span id="group2"></span></div>

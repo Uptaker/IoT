@@ -10,6 +10,7 @@
   let values = []
 
   async function status() {
+    document.querySelector('#lastFetch').innerText = new Date(Date.now()).toLocaleString()
     let {value, lastUpdate} = await fetch(`/status/last-update`).then((res) => res.json()) ?? 0
     if (lastTime === lastUpdate) return
 
@@ -70,7 +71,8 @@
     </div>
     <div style="display: flex; flex-direction: column; justify-content: center; gap: 2rem;">
         <h1 id="value"></h1>
-        <h3 id="lastUpdate"></h3>
+        <h3>Last time value changed <span id="lastUpdate"></span></h3>
+        <h3>Last update attempt <span id="lastFetch"></span></h3>
         <p>Highest value: <span id="highestValue"></span></p>
         <p>Smallest value: <span id="smallestValue"></span></p>
         <p>Average value: <span id="averageValue"></span></p>

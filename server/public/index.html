@@ -134,8 +134,8 @@
 
 <body>
 
-<div style="display: flex; justify-content: space-around; gap: 2rem">
-    <div>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; justify-content: space-between; gap: 2rem">
+    <div class="section">
         <h1>Values</h1>
         <input type="button" value="Delete first value" id="delFirstBtn" onclick="deleteFirst()">
         <p>Value count: <span id="valueCount"></span></p>
@@ -143,15 +143,40 @@
             <ul id="list"></ul>
         </div>
     </div>
-    <div style="display: flex; flex-direction: column; justify-content: center; gap: 2rem;">
+    <div class="section" style="display: flex; flex-direction: column; align-items: center; gap: 2rem;">
         <h1 id="value"></h1>
-        <h3>Last time value changed <span id="lastUpdate"></span></h3>
-        <h3>Last update attempt <span id="lastFetch"></span></h3>
-        <p>Highest value: <span id="highestValue"></span></p>
-        <p>Smallest value: <span id="smallestValue"></span></p>
-        <p>Average value: <span id="averageValue"></span></p>
-        <p>Standard deviation: <span id="stdDeviation"></span></p>
-        <p>Median: <span id="median"></span></p>
+
+        <table>
+            <tr>
+                <th>Last time value changed</th>
+                <td><span id="lastUpdate"></span></td>
+            </tr>
+            <tr>
+                <th>Highest value</th>
+                <td><span id="highestValue"></span></td>
+            </tr>
+            <tr>
+                <th>Smallest value</th>
+                <td><span id="smallestValue"></span></td>
+            </tr>
+            <tr>
+                <th>Average value</th>
+                <td><span id="averageValue"></span></td>
+            </tr>
+            <tr>
+                <th>Standard deviation</th>
+                <td><span id="stdDeviation"></span></td>
+            </tr>
+            <tr>
+                <th>Median</th>
+                <td><span id="median"></span></td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="section">
+        <h1>Graph</h1>
+        <p>Last update attempt <span id="lastFetch"></span></p>
         <canvas id="canvas" width="500" height="500"></canvas>
         <div id="color" style="display:grid; grid-template-columns: 1fr 1fr; height: 500px; width: 500px; border: 1px solid indianred; text-align: center; align-items: center">
             <div><b>0-256:</b> <span id="group1"></span></div>
@@ -164,3 +189,32 @@
 
 </body>
 </html>
+
+<style>
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #383838;
+    }
+
+    .section {
+        background-color: #ffffff;
+        padding: 1rem;
+        border: 1px solid #eeebeb;
+    }
+
+    .section:nth-of-type(2n) {
+        background-color: #fffcfb;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+
+    tr {
+        background-color: rgba(241, 216, 216, 0.2);
+    }
+
+    tr:nth-of-type(2n) {
+        background-color: rgba(238, 204, 204, 0.54);
+    }
+</style>

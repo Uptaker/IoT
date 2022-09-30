@@ -8,6 +8,7 @@
 <script>
   let lastTime = Date.now()
   let values = []
+  let valuesKen = []
   let allValues = []
   let averageValues = []
   let groups = [0, 0, 0, 0]
@@ -15,15 +16,17 @@
   async function status() {
     document.querySelector('#lastFetch').innerText = new Date(Date.now()).toLocaleString()
     let {value, lastUpdate} = await fetch(`/status/last-update`).then((res) => res.json()) ?? 0
+    let kenValue = await fetch(`https://kenpik.000webhostapp.com/loe.php`).then((res) => res.json()) ?? 0
     if (lastTime === lastUpdate) {
 
       updateAllValues(value)
       return drawGraph()
     }
-      updateAllValues(value)
+    updateAllValues(value)
     value = parseInt(value)
     updateGroups(value)
     lastTime = lastUpdate
+    valuesKen.push(kenValue)
     values.push(value)
     document.querySelector('#value').innerText = value
     document.querySelector('#lastUpdate').innerText = new Date(lastUpdate).toLocaleString()
@@ -58,16 +61,27 @@
     if (!values?.length) return console.log('Could not calculate - insufficient values')
 
     const size = values.length
+    const kenSize = valuesKen.length
     document.querySelector('#highestValue').innerText = Math.max.apply(null, values)
+    document.querySelector('#highestValueKen').innerText = Math.max.apply(null, valuesKen)
+
     document.querySelector('#smallestValue').innerText = Math.min.apply(null, values)
+    document.querySelector('#smallestValueKen').innerText = Math.min.apply(null, valuesKen)
+
     let average = values.reduce((prev, curr) => prev + curr, 0) / size;
     document.querySelector('#averageValue').innerText = average
+    document.querySelector('#averageValueKen').innerText = valuesKen.reduce((prev, curr) => prev + curr, 0) / size;
 
     const mean = values.reduce((a, b) => a + b) / size
+    const meanKen = values.reduce((a, b) => a + b) / size
     document.querySelector('#stdDeviation').innerText = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / size)
+    document.querySelector('#stdDeviation').innerText = Math.sqrt(valuesKen.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / kenSize)
     document.querySelector('#valueCount').innerText = size
+    document.querySelector('#valueCountKen').innerText = kenSize
     const medianAvg = values.sort((a, b) => a - b).length / 2
+    const medianAvgKen = values.sort((a, b) => a - b).length / 2
     document.querySelector('#median').innerText = medianAvg % 1 === 0 ? (values[medianAvg - 1] + values[medianAvg]) / 2 : values[Math.floor(medianAvg)]
+    document.querySelector('#medianKen').innerText = medianAvgKen % 1 === 0 ? (valuesKen[medianAvgKen - 1] + valuesKen[medianAvgKen]) / 2 : valuesKen[Math.floor(medianAvgKen)]
     updateAverageValues(average)
   }
 
@@ -193,6 +207,30 @@
             <tr>
                 <th>Median</th>
                 <td><span id="median"></span></td>
+            </tr>
+        </table>
+
+        <h2>Ken stats</h2>
+        <table>
+            <tr>
+                <th>Highest value</th>
+                <td><span id="highestValueKen"></span></td>
+            </tr>
+            <tr>
+                <th>Smallest value</th>
+                <td><span id="smallestValueKen"></span></td>
+            </tr>
+            <tr>
+                <th>Average value</th>
+                <td><span id="averageValueKen"></span></td>
+            </tr>
+            <tr>
+                <th>Standard deviation</th>
+                <td><span id="stdDeviationKen"></span></td>
+            </tr>
+            <tr>
+                <th>Median</th>
+                <td><span id="medianKen"></span></td>
             </tr>
         </table>
 

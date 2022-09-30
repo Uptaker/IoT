@@ -1,5 +1,6 @@
 import express, {text} from 'express'
 import fetch from 'node-fetch'
+import cors from 'cors'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -32,6 +33,8 @@ function shouldBeOn(value) {
   if (currentLimit === 0) return true
   else return value < currentLimit;
 }
+app.use(cors())
+
 
 app.use(express.json())
 app.use('/', express.static('public'))
@@ -47,7 +50,7 @@ function updateValues(req) {
   return false
 }
 
-app.get('/status', (req, res) => {
+app.get('/status', cors({origin: '*'}),(req, res) => {
   console.status(req)
   const isValueUpdated = updateValues(req);
   res.status(200).send(isValueUpdated ? shouldBeOn(value) : value.toString())

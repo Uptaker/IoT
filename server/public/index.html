@@ -9,6 +9,7 @@
   let lastTime = Date.now()
   let values = []
   let allValues = []
+  let averageValues = []
   let groups = [0, 0, 0, 0]
 
   async function status() {
@@ -35,8 +36,15 @@
   function updateAllValues(value) {
       allValues.push(value)
       if (allValues.length > 20) {
-          allValues.unshift()
+          allValues.shift()
       }
+  }
+
+  function updateAverageValues(value) {
+    averageValues.push(value)
+    if (averageValues.length > 20) {
+      averageValues.shift()
+    }
   }
 
   function addToList(value) {
@@ -52,13 +60,15 @@
     const size = values.length
     document.querySelector('#highestValue').innerText = Math.max.apply(null, values)
     document.querySelector('#smallestValue').innerText = Math.min.apply(null, values)
-    document.querySelector('#averageValue').innerText = values.reduce((prev, curr) => prev + curr, 0) / size
+    let average = values.reduce((prev, curr) => prev + curr, 0) / size;
+    document.querySelector('#averageValue').innerText = average
 
     const mean = values.reduce((a, b) => a + b) / size
     document.querySelector('#stdDeviation').innerText = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / size)
     document.querySelector('#valueCount').innerText = size
-    const average = values.sort((a, b) => a - b).length / 2
-    document.querySelector('#median').innerText = average % 1 === 0 ? (values[average - 1] + values[average]) / 2 : values[Math.floor(average)]
+    const medianAvg = values.sort((a, b) => a - b).length / 2
+    document.querySelector('#median').innerText = medianAvg % 1 === 0 ? (values[medianAvg - 1] + values[medianAvg]) / 2 : values[Math.floor(medianAvg)]
+    updateAverageValues(average)
   }
 
   function updateGroups(value, remove = false) {
@@ -120,13 +130,14 @@
     context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );
     context.stroke();
 
-    drawLine(allValues)
-    function drawLine(arr) {
+    drawLine(allValues, 'black')
+    drawLine(averageValues, 'blue')
+    function drawLine(arr, color) {
         const size = allValues.length
         const largest = Math.max.apply(null, allValues)
         context.beginPath();
         context.lineJoin = "round";
-        context.strokeStyle = "black";
+        context.strokeStyle = color;
         context.moveTo(GRAPH_LEFT, (GRAPH_HEIGHT - arr[0] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
         for (let i = 1; i < size; i++) {
             context.lineTo(GRAPH_RIGHT / size * i + GRAPH_LEFT, (GRAPH_HEIGHT - arr[i] / largest * GRAPH_HEIGHT) + GRAPH_TOP);

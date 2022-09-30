@@ -1,4 +1,5 @@
-import express from 'express'
+import express, {text} from 'express'
+import fetch from 'node-fetch'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -50,6 +51,11 @@ app.get('/status', (req, res) => {
   console.status(req)
   const isValueUpdated = updateValues(req);
   res.status(200).send(isValueUpdated ? shouldBeOn(value) : value.toString())
+});
+
+app.get('/status/ken', async (req, res) => {
+  const value = await fetch('https://kenpik.000webhostapp.com/loe.php').then(t => t.text())
+  res.status(200).send(value.toString())
 });
 
 app.get('/status/last-update', (req, res) => {

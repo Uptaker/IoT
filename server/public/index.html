@@ -15,10 +15,11 @@
     document.querySelector('#lastFetch').innerText = new Date(Date.now()).toLocaleString()
     let {value, lastUpdate} = await fetch(`/status/last-update`).then((res) => res.json()) ?? 0
     if (lastTime === lastUpdate) {
-      allValues.push(value)
+
+      updateAllValues(value)
       return drawGraph()
     }
-    allValues.push(value)
+      updateAllValues(value)
     value = parseInt(value)
     updateGroups(value)
     lastTime = lastUpdate
@@ -29,6 +30,13 @@
     addToList(value)
     calculate()
     drawGraph()
+  }
+
+  function updateAllValues(value) {
+      allValues.push(value)
+      if (allValues.length > 20) {
+          allValues.unshift()
+      }
   }
 
   function addToList(value) {
@@ -112,17 +120,21 @@
     context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );
     context.stroke();
 
-    const size = allValues.length
-    const largest = Math.max.apply(null, allValues)
-
-    context.beginPath();
-    context.lineJoin = "round";
-    context.strokeStyle = "black";
-    context.moveTo(GRAPH_LEFT, (GRAPH_HEIGHT - allValues[0] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
-    for (let i = 1; i < size; i++) {
-      context.lineTo(GRAPH_RIGHT / size * i + GRAPH_LEFT, (GRAPH_HEIGHT - allValues[i] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
+    drawLine(allValues)
+    function drawLine(arr) {
+        const size = allValues.length
+        const largest = Math.max.apply(null, allValues)
+        context.beginPath();
+        context.lineJoin = "round";
+        context.strokeStyle = "black";
+        context.moveTo(GRAPH_LEFT, (GRAPH_HEIGHT - arr[0] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
+        for (let i = 1; i < size; i++) {
+            context.lineTo(GRAPH_RIGHT / size * i + GRAPH_LEFT, (GRAPH_HEIGHT - arr[i] / largest * GRAPH_HEIGHT) + GRAPH_TOP);
+        }
+        context.stroke();
     }
-    context.stroke();
+
+
 
   }
 

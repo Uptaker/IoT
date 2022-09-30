@@ -144,8 +144,8 @@
     context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );
     context.stroke();
 
-    drawLine(allValues, 'black')
-    drawLine(averageValues, 'blue')
+    drawLine(allValues, 'blue')
+    drawLine(averageValues, 'green')
     function drawLine(arr, color) {
         const size = allValues.length
         const largest = Math.max.apply(null, allValues)
@@ -243,6 +243,8 @@
         <h1>Graph</h1>
         <p>Last update attempt <span id="lastFetch"></span></p>
         <canvas id="canvas" width="500" height="500"></canvas>
+        <p style="color: blue">Praegu</p>
+        <p style="color:green">Keskmine</p>
         <div id="color" style="display:grid; grid-template-columns: 1fr 1fr; height: 500px; width: 500px; border: 1px solid indianred; text-align: center; align-items: center">
             <div><b>0-256:</b> <span id="group1"></span></div>
             <div><b>257-512:</b> <span id="group2"></span></div>

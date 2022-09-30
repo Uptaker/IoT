@@ -75,7 +75,7 @@
     const mean = values.reduce((a, b) => a + b) / size
     const meanKen = values.reduce((a, b) => a + b) / size
     document.querySelector('#stdDeviation').innerText = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / size)
-    document.querySelector('#stdDeviation').innerText = Math.sqrt(valuesKen.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / kenSize)
+    document.querySelector('#stdDeviationKen').innerText = Math.sqrt(valuesKen.map(x => Math.pow(x - meanKen, 2)).reduce((a, b) => a + b) / kenSize)
     document.querySelector('#valueCount').innerText = size
     document.querySelector('#valueCountKen').innerText = kenSize
     const medianAvg = values.sort((a, b) => a - b).length / 2
@@ -231,6 +231,10 @@
             <tr>
                 <th>Median</th>
                 <td><span id="medianKen"></span></td>
+            </tr>
+            <tr>
+                <th>Count</th>
+                <td><span id="valueCountKen"></span></td>
             </tr>
         </table>
 

@@ -1,0 +1,38 @@
+
+<!doctype html>
+<html>
+<head>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
+      import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-database.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyCC0jtfZCc4lGff3AYJQzQP60q0KR3L7fA",
+        authDomain: "nodemcu2022-c299b.firebaseapp.com",
+        databaseURL: "https://nodemcu2022-c299b-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "nodemcu2022-c299b",
+        storageBucket: "nodemcu2022-c299b.appspot.com",
+        messagingSenderId: "730820215102",
+        appId: "1:730820215102:web:945fe7c18dea75d0c56c6f"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+      const koht = ref(db, "1007");
+      onValue(koht, kuva);
+      function kuva(viit){
+        let sisu=viit.val();
+        console.log(sisu);
+        kiht1.innerHTML=sisu.yhendatud;
+      }
+      window.algseis=function(){
+        console.log("vajutati");
+        set(koht, {"yhendatud":"pole vastatud"});
+      }
+    </script>
+</head>
+<body>
+<div id="kiht1">siia tuleb tekst</div>
+<input type="button" value="puhasta" onclick="algseis()" />
+</body>
+</html>

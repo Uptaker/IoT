@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
+      import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-database.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyABSGkrMdXdAzVpQ2LNWzxWM8zORwVG9Ac",
+        authDomain: "kenpikasjad.firebaseapp.com",
+        databaseURL: "https://kenpikasjad-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "kenpikasjad",
+        storageBucket: "kenpikasjad.appspot.com",
+        messagingSenderId: "269648607479",
+        appId: "1:269648607479:web:0ead38cf9c56c6d5eb7bf2"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db=getDatabase();
+      const koht=ref(db, "1007");
+
+      const kysimusekoht=ref(db, "1008");
+
+      let kysimus;
+      let oigevastus;
+
+      onValue(koht, kuva);
+      function kuva(viit){
+        let sisu=viit.val();
+        console.log(sisu);
+        kasVastatud.innerHTML=sisu.vastatud;
+
+
+        vastus.innerHTML=sisu.vastus;
+
+
+      }
+      window.algseis=function(){
+        console.log("vajutatud");
+        update(koht, {"vastatud":"ei", "vastus": "puudub", "tulemus": "puudub"});
+        //set(koht, {"vastus": "puudub"});
+
+      }
+      window.oige=function(){
+        console.log("vajutatud oige");
+        update(koht, {"tulemus":"oige"});
+      }
+      window.vale=function(){
+        console.log("vajutatud vale");
+        update(koht, {"tulemus":"vale"});
+      }
+      window.esita=function(){
+        kysimus =document.getElementById("kysimus").value;
+        oigevastus = document.getElementById("oigevastus").value;
+        if(kysimus == null){
+          alert("Kysimus sisestamata!");
+        }
+        else{
+          console.log(kysimus);
+          console.log(oigevastus);
+          update(kysimusekoht, {"kysimus": kysimus, "oige": oigevastus});
+          esitatavkysimus.innerHTML=kysimus;
+          oigev.innerHTML= oigevastus;
+
+        }
+        window.lopeta=function(){
+          kysimus = "";
+          oigevastus = "";
+          update(kysimusekoht, {"kysimus": kysimus, "oige": oigevastus});
+          esitatavkysimus.innerHTML=kysimus;
+          oigev.innerHTML= oigevastus;
+
+        }
+      }
+
+
+    </script>
+</head>
+<body>
+<h3>Kysimuse sisestus</h3>
+
+<label>Sisesta esitatav kysimus: </label>
+<br>
+<input type="text" name="kysimus" id="kysimus"><br>
+<label for="oigevastus">Vali oige vastuse variant:</label>
+<br>
+<select name="oigevastus" id="oigevastus">
+    <option value="jah">JAH</option>
+    <option value="ei">EI</option>
+</select>
+<br>
+<input type="button" onclick="esita()" value="Esita">
+
+
+
+<h3>Esitamisel olev kysimus:</h3>
+
+<div id="esitatavkysimus">kysimus sisestamata!</div>
+<div id="oigev">vastus sisestamata</div>
+<input type="button" value="LÃĩpeta esitus" onclick="lopeta()" />
+<h3>Vastatud:</h3>
+
+<div id="kasVastatud">siia tuleb tekst</div>
+
+<h3>Vastus:</h3>
+
+<div id="vastus">siia tuleb tekst</div>
+
+
+<input type="button" value="puhasta" onclick="algseis()" />
+
+<input type="button" value="TRUE" onclick="oige()" />
+<input type="button" value="FALSE" onclick="vale()" />
+</body>
+</html>

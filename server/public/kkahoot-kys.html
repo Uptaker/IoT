@@ -1,0 +1,41 @@
+
+<!doctype html>
+<html>
+<head>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
+      import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-database.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyABSGkrMdXdAzVpQ2LNWzxWM8zORwVG9Ac",
+        authDomain: "kenpikasjad.firebaseapp.com",
+        databaseURL: "https://kenpikasjad-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "kenpikasjad",
+        storageBucket: "kenpikasjad.appspot.com",
+        messagingSenderId: "269648607479",
+        appId: "1:269648607479:web:0ead38cf9c56c6d5eb7bf2"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db=getDatabase();
+      const koht=ref(db, "1008");
+      onValue(koht, kuva);
+      function kuva(viit){
+        let sisu=viit.val();
+        console.log(sisu);
+        kysimus.innerHTML=sisu.kysimus;
+
+
+
+
+
+      }
+    </script>
+</head>
+<body>
+<h3> Vasta puldiga kysimusele:</h3>
+
+<div id="kysimus">siia tuleb tekst</div>
+
+</body>
+</html>
